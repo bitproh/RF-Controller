@@ -1,5 +1,6 @@
 import pyvisa
-from SG_test_sequence import run_test_sequence
+#from SG_test_sequence import run_test_sequence
+from SG_basic_sequence import run_basic_test_sequence
 from utils import slow_print
 
 def main(test_mode=False):
@@ -24,7 +25,8 @@ def main(test_mode=False):
 
     slow_print("Starting Test Sequence...\n")
 
-    result = run_test_sequence(instr)
+    #result = run_test_sequence(instr)
+    result = run_basic_test_sequence(instr)
 
     slow_print("\nTest Sequence Completed.")
     print("Result Dictionary:", result)
