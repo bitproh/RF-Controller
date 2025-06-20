@@ -1,3 +1,5 @@
+import pyvisa
+# This script searches for RF devices based on user input for identity, VISA resource, and IP address.
 RF_devices = [
     {
         "identity": "Signal_Generator",
@@ -16,6 +18,7 @@ RF_devices = [
     }
 ]
 
+# Get user input for search criteria
 search_identity = input("Enter device identity: ")
 search_resource = input("Enter VISA resource: ")
 search_ip = input("Enter IP address: ")
@@ -29,6 +32,7 @@ results = [
        device["ip_address"] == search_ip
 ]
 
+# If any matching device is found, print the details
 if results:
     print("Matching device(s):")
     for device in results:
@@ -38,3 +42,4 @@ if results:
         print()  # Add a blank line between devices
 else:
     print("No matching devices found.")
+print("Search completed.")
