@@ -1,17 +1,32 @@
 from utils import slow_print
 
 class MockInstrument:
+    def __init__(self):
+        self.freq = "0.0"
+        self.power = "0.0"
+
     def write(self, command):
         slow_print(f"[MOCK WRITE] {command}")
 
+        # Parse SCPI commands like "FREQ 2e9" or "POW -10"
+        if command.startswith("FREQ "):
+            try:
+                self.freq = command.split(" ")[1]
+            except IndexError:
+                self.freq = "0.0"
+
+        elif command.startswith("POW "):
+            try:
+                self.power = command.split(" ")[1]
+            except IndexError:
+                self.power = "0.0"
+
     def query(self, command):
         slow_print(f"[MOCK QUERY] {command}")
-        if command == "*IDN?":
-            return "MockInstrument,Model123,Serial0001,1.0\n"
-        elif command == "FREQ?":
-            return "2.0000000000E+09\n"
+        if command == "FREQ?":
+            return f"{self.freq}\n"
         elif command == "POW?":
-            return "-10.0\n"
+            return f"{self.power}\n"
         else:
             return "OK\n"
 
