@@ -14,7 +14,7 @@ def main(test_mode=False):
         rm = pyvisa.ResourceManager()
         
         # ✅ Replace this with your real IP address or VISA string
-        visa_address = "TCPIP0::192.168.1.100::inst0::INSTR"
+        visa_address = "TCPIP0::169.254.167.6::inst0::INSTR"
         
         try:
             instr = rm.open_resource(visa_address)
@@ -35,4 +35,4 @@ def main(test_mode=False):
     slow_print("Instrument session closed.")
 
 if __name__ == "__main__":
-    main(test_mode=True)  # 🔁 Toggle to False when testing live!
+    main(test_mode=False)  # 🔁 Toggle to False when testing live!
