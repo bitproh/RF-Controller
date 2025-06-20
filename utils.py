@@ -27,7 +27,7 @@ def parse_frequency(freq_input):
 
 #fucntion for printing values with delay
 
-def slow_print(text, delay=0.05, char_delay=0.06):
+def slow_print(text, delay=0.05, char_delay=0.05):
     for char in text:
         print(char, end='', flush=True)
         time.sleep(char_delay)
