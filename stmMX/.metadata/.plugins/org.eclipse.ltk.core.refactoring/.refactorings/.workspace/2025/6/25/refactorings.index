@@ -1,0 +1,6 @@
+1750238489223	Delete resource 'UART_echo'
+1750238496175	Delete resource 'test'
+1750238500694	Delete resource 'temp_ADC'
+1750238519641	Delete resource 'Ethernet_controller'
+1750238557781	Delete resource 'stm_controller'
+1750238581544	Delete resource 'led_controller'

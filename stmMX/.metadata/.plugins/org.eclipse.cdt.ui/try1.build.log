@@ -1,0 +1,55 @@
+15:16:21 **** Incremental Build of configuration Debug for project try1 ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:200:13: error: invalid storage class for function 'MX_ETH_Init'
+  200 | static void MX_ETH_Init(void)
+      |             ^~~~~~~~~~~
+../Core/Src/main.c:249:13: error: invalid storage class for function 'MX_USART3_UART_Init'
+  249 | static void MX_USART3_UART_Init(void)
+      |             ^~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:284:13: error: invalid storage class for function 'MX_USB_OTG_FS_PCD_Init'
+  284 | static void MX_USB_OTG_FS_PCD_Init(void)
+      |             ^~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:319:13: error: invalid storage class for function 'MX_GPIO_Init'
+  319 | static void MX_GPIO_Init(void)
+      |             ^~~~~~~~~~~~
+../Core/Src/main.c:388:1: error: expected declaration or statement at end of input
+  388 | }
+      | ^
+../Core/Src/main.c: At top level:
+../Core/Src/main.c:75:13: warning: 'MX_GPIO_Init' used but never defined
+   75 | static void MX_GPIO_Init(void);
+      |             ^~~~~~~~~~~~
+../Core/Src/main.c:76:13: warning: 'MX_ETH_Init' used but never defined
+   76 | static void MX_ETH_Init(void);
+      |             ^~~~~~~~~~~
+../Core/Src/main.c:77:13: warning: 'MX_USART3_UART_Init' used but never defined
+   77 | static void MX_USART3_UART_Init(void);
+      |             ^~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:78:13: warning: 'MX_USB_OTG_FS_PCD_Init' used but never defined
+   78 | static void MX_USB_OTG_FS_PCD_Init(void);
+      |             ^~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:379:6: warning: 'Error_Handler' defined but not used [-Wunused-function]
+  379 | void Error_Handler(void)
+      |      ^~~~~~~~~~~~~
+../Core/Src/main.c:319:13: warning: 'MX_GPIO_Init' defined but not used [-Wunused-function]
+  319 | static void MX_GPIO_Init(void)
+      |             ^~~~~~~~~~~~
+../Core/Src/main.c:284:13: warning: 'MX_USB_OTG_FS_PCD_Init' defined but not used [-Wunused-function]
+  284 | static void MX_USB_OTG_FS_PCD_Init(void)
+      |             ^~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:249:13: warning: 'MX_USART3_UART_Init' defined but not used [-Wunused-function]
+  249 | static void MX_USART3_UART_Init(void)
+      |             ^~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:200:13: warning: 'MX_ETH_Init' defined but not used [-Wunused-function]
+  200 | static void MX_ETH_Init(void)
+      |             ^~~~~~~~~~~
+../Core/Src/main.c:142:6: warning: 'SystemClock_Config' defined but not used [-Wunused-function]
+  142 | void SystemClock_Config(void)
+      |      ^~~~~~~~~~~~~~~~~~
+make: *** [Core/Src/subdir.mk:34: Core/Src/main.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+
+15:16:23 Build Failed. 6 errors, 10 warnings. (took 1s.727ms)
+
