@@ -6,12 +6,13 @@ def run_test_sequence(instr):
     slow_print("Resetting instrument to known state...")
     instr.write("*RST")
 
-    freq_str = input("Enter the Frequency to be set (e.g., 2GHz, 500kHz, 1.5MHz): ")
-    try:
-        freq = parse_frequency(freq_str)
-    except ValueError as e:
-        slow_print(f"Error: {e}")
-        return None
+    while True:
+        freq_str = input("Enter the Frequency to be set (e.g., 2GHz, 500kHz, 1.5MHz): ")
+        try:
+            freq = parse_frequency(freq_str)
+            break  # valid, exit loop
+        except ValueError as e:
+            slow_print(f"Error: {e}. Please try again.")
 
     slow_print(f"Parsed frequency: {freq} Hz")
 
