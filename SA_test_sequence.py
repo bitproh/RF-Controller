@@ -7,6 +7,7 @@ def run_spectrum_analysis(instr):
     slow_print("Resetting analyzer to known state...")
     instr.write("*RST")
 
+    
     while True:
         freq_str = input("Enter Center Frequency (e.g., 1GHz, 500kHz): ")
         try:
