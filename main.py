@@ -40,12 +40,14 @@ def main(test_mode=False):
     # --------------------------
     # Signal Generator Selected
     # --------------------------
-    
+
     if choice == "1":
         name = "Signal Generator"
         if test_mode:
             from SG_test_mode import MockInstrument
-            from SG_test_sequence import run_test_sequence
+            #from SG_test_sequence import run_test_sequence
+            from SG_basic_sequence import run_basic_test_sequence
+
             slow_print("Running SIGNAL GENERATOR in TEST MODE.")
             instr = MockInstrument()
         else:
