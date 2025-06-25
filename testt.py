@@ -11,4 +11,3 @@ time.sleep(2)
 sig_gen.write("OUTP OFF")
 
 sig_gen.close()
-

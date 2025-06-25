@@ -43,5 +43,3 @@ def run_basic_test_sequence(instr):
     instr.write("OUTP OFF")
 
     return results
-
-
