@@ -1,6 +1,6 @@
 import pyvisa
 from utils import slow_print
-
+slow_print("Welcome to the RF Test Automation Suite!")
 # ✅ List your known instruments (Signal Generator and Spectrum Analyzer)
 known_instruments = {
     "Signal Generator": "TCPIP0::169.254.167.6::inst0::INSTR",
@@ -29,8 +29,6 @@ def check_connected_instruments():
 def main(test_mode=False):
     # ✅ Check connected instruments first
     connected_devices = check_connected_instruments()
-
-    slow_print("Welcome to the RF Test Automation Suite!")
     
           
     slow_print("Please select the instrument to test:")
