@@ -1,45 +1,51 @@
-from utils import parse, slow_print
+from utils import slow_print
 
-def run_test_sequence(instr):
-    results = {}
+class MockInstrument:
+    def __init__(self):
+        self.center_freq = "0.0"
+        self.span = "0.0"
+        self.ref_level = "0.0"
+        self.marker_freq = "1.0e9"
+        self.marker_power = "-30.0"
 
-    slow_print("Resetting instrument to known state...")
-    instr.write("*RST")
+    def write(self, command):
+        slow_print(f"[MOCK WRITE] {command}")
 
-    while True:
-        freq_str = input("Enter the Frequency to be set (e.g., 2GHz, 500kHz, 1.5MHz): ")
-        try:
-            freq = parse(freq_str)
-            break  # valid, exit loop
-        except ValueError as e:
-            slow_print(f"Error: {e}. Please try again.")
+        # Parse SCPI commands for spectrum analyzer
+        if command.startswith("FREQ:CENT "):
+            try:
+                self.center_freq = command.split(" ")[1]
+            except IndexError:
+                self.center_freq = "0.0"
+        elif command.startswith("FREQ:SPAN "):
+            try:
+                self.span = command.split(" ")[1]
+            except IndexError:
+                self.span = "0.0"
+        elif command.startswith("DISP:WIND:TRAC:Y:RLEV "):
+            try:
+                self.ref_level = command.split(" ")[1]
+            except IndexError:
+                self.ref_level = "0.0"
+        elif command.startswith("CALC:MARK1:MAX"):
+            # Simulate marker peak search
+            self.marker_freq = self.center_freq
+            self.marker_power = "-25.0"
 
-    slow_print(f"Parsed frequency: {freq} Hz")
+    def query(self, command):
+        slow_print(f"[MOCK QUERY] {command}")
+        if command == "FREQ:CENT?":
+            return f"{self.center_freq}\n"
+        elif command == "FREQ:SPAN?":
+            return f"{self.span}\n"
+        elif command == "DISP:WIND:TRAC:Y:RLEV?":
+            return f"{self.ref_level}\n"
+        elif command == "CALC:MARK1:X?":
+            return f"{self.marker_freq}\n"
+        elif command == "CALC:MARK1:Y?":
+            return f"{self.marker_power}\n"
+        else:
+            return "OK\n"
 
-    while True:
-        try:
-            power = float(input("Enter the Power to be set (in dBm, between -50 and 0): "))
-            if -50 <= power <= 0:
-                break
-            else:
-                slow_print("Power out of range! Please enter a value between -50 and 0 dBm.")
-        except ValueError:
-            slow_print("Invalid input! Please enter a numeric value.")
-
-    slow_print(f"Setting Frequency to {freq} Hz...")
-    instr.write(f"FREQ {freq}")
-
-    slow_print(f"Setting Power to {power} dBm...")
-    instr.write(f"POW {power}")
-
-    slow_print("Turning Output ON...")
-    instr.write("OUTP ON")
-
-    slow_print("Reading back values from instrument...")
-    results['Set Frequency (Hz)'] = instr.query("FREQ?").strip()
-    results['Set Power (dBm)'] = instr.query("POW?").strip()
-
-    slow_print("Turning Output OFF...")
-    instr.write("OUTP OFF")
-
-    return results
+    def close(self):
+        slow_print("[MOCK] Closed instrument")
