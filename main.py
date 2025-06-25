@@ -1,5 +1,5 @@
 import pyvisa
-from utils import slow_print, export_results_to_excel
+from utils import slow_print, export_results_to_excel, SLOW_MODE
 slow_print("Welcome to the RF Test Automation Suite!")
 # ✅ List your known instruments (Signal Generator and Spectrum Analyzer)
 known_instruments = {

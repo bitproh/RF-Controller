@@ -88,9 +88,15 @@ def parse_frequency(freq_input):
 
 #fucntion for printing values with delay
 
+SLOW_MODE = False # 🔁 Toggle this to False for instant printing
+
 def slow_print(text, delay=0.05, char_delay=0.05):
+    if not SLOW_MODE:
+        print(text)
+        return
+
     for char in text:
         print(char, end='', flush=True)
         time.sleep(char_delay)
-    print()  # Move to next line after full string
+    print()
     time.sleep(delay)

@@ -1,4 +1,4 @@
-from utils import parse_frequency, slow_print
+from utils import parse_frequency, slow_print, SLOW_MODE
 import time
 
 def run_spectrum_analysis(instr):
