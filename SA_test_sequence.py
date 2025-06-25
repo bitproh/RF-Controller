@@ -1,6 +1,7 @@
 from utils import parse_frequency, slow_print
+import datetime
 
-def run_test_sequence(instr):
+def run_test_sequence(instr, device_name="SpectrumAnalyzer"):
     results = []
 
     slow_print("Resetting analyzer to known state...")
@@ -14,7 +15,6 @@ def run_test_sequence(instr):
 
             span_str = input("Enter Span (e.g., 10MHz): ")
             span = parse_frequency(span_str)
-
             break
         except ValueError as e:
             slow_print(f"Error: {e}. Please try again.")
@@ -27,6 +27,27 @@ def run_test_sequence(instr):
         except ValueError:
             slow_print("Invalid input! Please enter a numeric value.")
 
+    # -------- Get Resolution Bandwidth (RBW) --------
+    while True:
+        try:
+            RBW = input("Enter Resolution Bandwidth (e.g., 100kHz): ")
+            RBW = parse_frequency(RBW)
+            instr.write(f"BAND {RBW}")
+            break
+        except ValueError as e:
+            slow_print(f"Error: {e}. Please try again.")
+
+    # -------- Get Video Bandwidth (VBW) --------
+    while True:
+        try:
+            VBW = input("Enter Video Bandwidth (e.g., 10kHz): ")
+            VBW = parse_frequency(VBW)
+            instr.write(f"BAND:VID {VBW}")
+            break
+        except ValueError as e:
+            slow_print(f"Error: {e}. Please try again.")
+
+    # -------- Set Analyzer Parameters --------
     slow_print(f"Setting Center Frequency: {center_freq} Hz")
     instr.write(f"FREQ:CENT {center_freq}")
 
@@ -52,5 +73,19 @@ def run_test_sequence(instr):
 
     slow_print(f"Peak Frequency: {peak_freq} Hz")
     slow_print(f"Peak Power: {peak_power} dBm")
+
+    # -------- Save Screenshot --------
+    now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"{device_name}_{now}.png"
+    instr.write(f':MMEM:STOR:SCR "{filename}"')
+    slow_print(f"Screenshot saved as {filename} on instrument.")
+
+    save_to_pc = input("Do you want to save the screenshot to your PC? (y/n): ").strip().lower()
+    if save_to_pc == "y":
+        slow_print("Transferring screenshot to PC...")
+        screenshot_data = instr.query_binary_values(f':MMEM:DATA? "{filename}"', datatype='B')
+        with open(filename, "wb") as f:
+            f.write(bytearray(screenshot_data))
+        slow_print(f"Screenshot saved as {filename} on your PC.")
 
     return results
