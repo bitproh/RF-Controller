@@ -47,11 +47,8 @@ def main(test_mode=False):
         if test_mode:
             from SG_test_mode import MockInstrument
             from SG_test_sequence import run_test_sequence
-<<<<<<< HEAD
-=======
             #from SG_basic_sequence import run_basic_test_sequence
 
->>>>>>> cb044c309e199e016bd5c5b28435b4bca7ad89ac
             slow_print("Running SIGNAL GENERATOR in TEST MODE.")
             instr = MockInstrument()
         else:
@@ -60,10 +57,7 @@ def main(test_mode=False):
                 return
 
             from SG_test_sequence import run_test_sequence
-<<<<<<< HEAD
-=======
             #from SG_basic_sequence import run_basic_test_sequence
->>>>>>> cb044c309e199e016bd5c5b28435b4bca7ad89ac
             slow_print("Running SIGNAL GENERATOR in LIVE MODE.")
             rm = pyvisa.ResourceManager()
             visa_address = connected_devices[name][0]  # Get address from check
@@ -76,10 +70,7 @@ def main(test_mode=False):
 
         slow_print("Starting Signal Generator Test Sequence...\n")
         result = run_test_sequence(instr)
-<<<<<<< HEAD
-=======
         #result = run_basic_test_sequence(instr)
->>>>>>> cb044c309e199e016bd5c5b28435b4bca7ad89ac
 
     # -------------------------------
     # Spectrum Analyzer Selected
