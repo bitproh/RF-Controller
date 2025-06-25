@@ -40,6 +40,7 @@ def main(test_mode=False):
     # --------------------------
     # Signal Generator Selected
     # --------------------------
+    
     if choice == "1":
         name = "Signal Generator"
         if test_mode:
