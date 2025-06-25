@@ -44,7 +44,8 @@ def main(test_mode=False):
         name = "Signal Generator"
         if test_mode:
             from SG_test_mode import MockInstrument
-            from SG_test_sequence import run_test_sequence
+            #from SG_test_sequence import run_test_sequence
+            from SG_basic_sequence import run_basic_test_sequence
             slow_print("Running SIGNAL GENERATOR in TEST MODE.")
             instr = MockInstrument()
         else:
@@ -52,7 +53,8 @@ def main(test_mode=False):
                 slow_print(f"{name} is not connected. Exiting.")
                 return
 
-            from SG_test_sequence import run_test_sequence
+            #from SG_test_sequence import run_test_sequence
+            from SG_basic_sequence import run_basic_test_sequence
             slow_print("Running SIGNAL GENERATOR in LIVE MODE.")
             rm = pyvisa.ResourceManager()
             visa_address = connected_devices[name][0]  # Get address from check
@@ -64,17 +66,19 @@ def main(test_mode=False):
                 return
 
         slow_print("Starting Signal Generator Test Sequence...\n")
-        result = run_test_sequence(instr)
+        #result = run_test_sequence(instr)
+        result = run_basic_test_sequence(instr)
 
     # -------------------------------
     # Spectrum Analyzer Selected
     # -------------------------------
-    
+
     elif choice == "2":
         name = "Spectrum Analyzer"
         if test_mode:
             from SA_test_mode import MockInstrument
             from SA_basic_sequence import run_spectrum_analysis
+            #from SA_test_sequence import run_test_sequence
             slow_print("Running SPECTRUM ANALYZER in TEST MODE.")
             instr = MockInstrument()
         else:
@@ -83,6 +87,8 @@ def main(test_mode=False):
                 return
 
             from SA_basic_sequence import run_spectrum_analysis
+            #from SA_test_sequence import run_test_sequence
+
             slow_print("Running SPECTRUM ANALYZER in LIVE MODE.")
             rm = pyvisa.ResourceManager()
             visa_address = connected_devices[name][0]  # Get address from check
@@ -95,6 +101,7 @@ def main(test_mode=False):
 
         slow_print("Starting Spectrum Analyzer Test Sequence...\n")
         result = run_spectrum_analysis(instr)
+        #result = run_test_sequence(instr)
 
     else:
         slow_print("Invalid choice! Exiting program.")
