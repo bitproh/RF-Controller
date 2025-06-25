@@ -1,9 +1,35 @@
 import pyvisa
 from utils import slow_print
 
+# ✅ List your known instruments (Signal Generator and Spectrum Analyzer)
+known_instruments = {
+    "Signal Generator": "TCPIP0::169.254.167.6::inst0::INSTR",
+    "Spectrum Analyzer": "USB0::0x2A8D::0x5D0C::MY12345678::INSTR"
+}
 
-rm = pyvisa.ResourceManager()
+# ✅ Function to check and return only connected instruments
+def check_connected_instruments():
+    slow_print("🔍 Checking connected instruments...")
+    rm = pyvisa.ResourceManager()
+    connected = {}
+
+    for name, addr in known_instruments.items():
+        try:
+            instr = rm.open_resource(addr)
+            idn = instr.query("*IDN?").strip()
+            print(f"✅ {name} connected: {idn}")
+            connected[name] = (addr, idn)
+            instr.close()
+        except Exception as e:
+            print(f"❌ {name} NOT connected. Error: {e}")
+
+    return connected
+
+
 def main(test_mode=False):
+    # ✅ Check connected instruments first
+    connected_devices = check_connected_instruments()
+
     slow_print("Welcome to the RF Test Automation Suite!")
     
           
@@ -17,16 +43,21 @@ def main(test_mode=False):
     # Signal Generator Selected
     # --------------------------
     if choice == "1":
+        name = "Signal Generator"
         if test_mode:
             from SG_test_mode import MockInstrument
             from SG_test_sequence import run_test_sequence
             slow_print("Running SIGNAL GENERATOR in TEST MODE.")
             instr = MockInstrument()
         else:
+            if name not in connected_devices:
+                slow_print(f"{name} is not connected. Exiting.")
+                return
+
             from SG_test_sequence import run_test_sequence
             slow_print("Running SIGNAL GENERATOR in LIVE MODE.")
             rm = pyvisa.ResourceManager()
-            visa_address = "TCPIP0::169.254.167.6::inst0::INSTR"  # 👈 Replace with actual SG IP
+            visa_address = connected_devices[name][0]  # Get address from check
             try:
                 instr = rm.open_resource(visa_address)
                 slow_print(f"Connected to: {instr.query('*IDN?').strip()}")
@@ -40,18 +71,23 @@ def main(test_mode=False):
     # -------------------------------
     # Spectrum Analyzer Selected
     # -------------------------------
-
+    
     elif choice == "2":
+        name = "Spectrum Analyzer"
         if test_mode:
             from SA_test_mode import MockInstrument
             from SA_basic_sequence import run_spectrum_analysis
             slow_print("Running SPECTRUM ANALYZER in TEST MODE.")
             instr = MockInstrument()
         else:
+            if name not in connected_devices:
+                slow_print(f"{name} is not connected. Exiting.")
+                return
+
             from SA_basic_sequence import run_spectrum_analysis
             slow_print("Running SPECTRUM ANALYZER in LIVE MODE.")
             rm = pyvisa.ResourceManager()
-            visa_address = "USB0::0x2A8D::0x5D0C::MY12345678::INSTR"  # 👈 Replace with actual SA VISA
+            visa_address = connected_devices[name][0]  # Get address from check
             try:
                 instr = rm.open_resource(visa_address)
                 slow_print(f"Connected to: {instr.query('*IDN?').strip()}")
@@ -71,6 +107,7 @@ def main(test_mode=False):
 
     instr.close()
     slow_print("Instrument session closed.")
+
 
 if __name__ == "__main__":
     main(test_mode=True)  # 🔁 Toggle to False for live mode
