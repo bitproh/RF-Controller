@@ -29,6 +29,8 @@ def check_connected_instruments():
 def main(test_mode=False):
     # ✅ Check connected instruments first
     connected_devices = check_connected_instruments()
+
+    
     
           
     slow_print("Please select the instrument to test:")
@@ -40,14 +42,16 @@ def main(test_mode=False):
     # --------------------------
     # Signal Generator Selected
     # --------------------------
-
     if choice == "1":
         name = "Signal Generator"
         if test_mode:
             from SG_test_mode import MockInstrument
             from SG_test_sequence import run_test_sequence
+<<<<<<< HEAD
+=======
             #from SG_basic_sequence import run_basic_test_sequence
 
+>>>>>>> cb044c309e199e016bd5c5b28435b4bca7ad89ac
             slow_print("Running SIGNAL GENERATOR in TEST MODE.")
             instr = MockInstrument()
         else:
@@ -56,7 +60,10 @@ def main(test_mode=False):
                 return
 
             from SG_test_sequence import run_test_sequence
+<<<<<<< HEAD
+=======
             #from SG_basic_sequence import run_basic_test_sequence
+>>>>>>> cb044c309e199e016bd5c5b28435b4bca7ad89ac
             slow_print("Running SIGNAL GENERATOR in LIVE MODE.")
             rm = pyvisa.ResourceManager()
             visa_address = connected_devices[name][0]  # Get address from check
@@ -69,7 +76,10 @@ def main(test_mode=False):
 
         slow_print("Starting Signal Generator Test Sequence...\n")
         result = run_test_sequence(instr)
+<<<<<<< HEAD
+=======
         #result = run_basic_test_sequence(instr)
+>>>>>>> cb044c309e199e016bd5c5b28435b4bca7ad89ac
 
     # -------------------------------
     # Spectrum Analyzer Selected
@@ -80,7 +90,6 @@ def main(test_mode=False):
         if test_mode:
             from SA_test_mode import MockInstrument
             from SA_basic_sequence import run_spectrum_analysis
-            #from SA_test_sequence import run_test_sequence
             slow_print("Running SPECTRUM ANALYZER in TEST MODE.")
             instr = MockInstrument()
         else:
@@ -89,7 +98,6 @@ def main(test_mode=False):
                 return
 
             from SA_basic_sequence import run_spectrum_analysis
-            #from SA_test_sequence import run_test_sequence
             slow_print("Running SPECTRUM ANALYZER in LIVE MODE.")
             rm = pyvisa.ResourceManager()
             visa_address = connected_devices[name][0]  # Get address from check
@@ -102,7 +110,6 @@ def main(test_mode=False):
 
         slow_print("Starting Spectrum Analyzer Test Sequence...\n")
         result = run_spectrum_analysis(instr)
-        #result = run_test_sequence(instr)
 
     else:
         slow_print("Invalid choice! Exiting program.")
