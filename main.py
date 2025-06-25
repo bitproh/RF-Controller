@@ -44,7 +44,7 @@ def main(test_mode=False):
             slow_print("Running SPECTRUM ANALYZER in TEST MODE.")
             instr = MockInstrument()
         else:
-            from SA_basic_sequence import run_basic_analyzer_sequence
+            from SA_basic_sequence import run_spectrum_analysis
             slow_print("Running SPECTRUM ANALYZER in LIVE MODE.")
             rm = pyvisa.ResourceManager()
             visa_address = "USB0::0x2A8D::0x5D0C::MY12345678::INSTR"  # 👈 Replace with actual SA VISA
@@ -56,7 +56,7 @@ def main(test_mode=False):
                 return
 
         slow_print("Starting Spectrum Analyzer Test Sequence...\n")
-        result = run_basic_analyzer_sequence(instr)
+        result = run_spectrum_analysis(instr)
 
     else:
         slow_print("Invalid choice! Exiting program.")
