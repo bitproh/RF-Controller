@@ -7,7 +7,6 @@ class MockInstrument:
         self.ref_level = "0.0"
         self.marker_freq = "1.0e9"
         self.marker_power = "-30.0"
-
     def write(self, command):
         slow_print(f"[MOCK WRITE] {command}")
 
