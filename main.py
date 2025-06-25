@@ -40,11 +40,11 @@ def main(test_mode=False):
     elif choice == "2":
         if test_mode:
             from SA_test_mode import MockInstrument
-            from SA_test_sequence import run_spectrum_analysis
+            from SA_basic_sequence import run_spectrum_analysis
             slow_print("Running SPECTRUM ANALYZER in TEST MODE.")
             instr = MockInstrument()
         else:
-            from SA_test_sequence import run_basic_analyzer_sequence
+            from SA_basic_sequence import run_basic_analyzer_sequence
             slow_print("Running SPECTRUM ANALYZER in LIVE MODE.")
             rm = pyvisa.ResourceManager()
             visa_address = "USB0::0x2A8D::0x5D0C::MY12345678::INSTR"  # 👈 Replace with actual SA VISA
