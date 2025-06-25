@@ -7,7 +7,6 @@ known_instruments = [
 
 rm = pyvisa.ResourceManager()
 
-<<<<<<< HEAD
 # Replace with your actual VISA address
 '''sig = rm.open_resource(rm.list_resources()[0])  # assumes first device is your sig-gen
 
@@ -45,7 +44,6 @@ sweep(1e9, 1.1e9, 10e6)
 time.sleep(2)
 output(False)
 '''
-=======
 for addr in known_instruments:
     try:
         instr = rm.open_resource(addr)
@@ -54,4 +52,3 @@ for addr in known_instruments:
         instr.close()
     except Exception as e:
         print(f"❌ {addr} NOT connected or unreachable. Error: {e}")
->>>>>>> 2baf7791e5ef6ac1faf5fa946b30c84d334f80ad
