@@ -1,8 +1,12 @@
 import pyvisa
 from utils import slow_print
 
+
+rm = pyvisa.ResourceManager()
 def main(test_mode=False):
     slow_print("Welcome to the RF Test Automation Suite!")
+    
+          
     slow_print("Please select the instrument to test:")
     slow_print("[1] Signal Generator")
     slow_print("[2] Spectrum Analyzer")
