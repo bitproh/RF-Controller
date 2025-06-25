@@ -1,17 +1,13 @@
-#this code has no conection with the actual working og the device,
-#this code is just for debugging and testing purposes.
-#person on use: Asif Muhammmad
-# first appproach testing
-# still on use, dont change.
-
-# simple_siggen.py
-
 import pyvisa
-import time
+
+known_instruments = [
+    "TCPIP0::169.254.167.6::inst0::INSTR",
+    "USB0::0x2A8D::0x1D0B::MY62282097::0::INSTR"
+]
 
 rm = pyvisa.ResourceManager()
-print("Resources:", rm.list_resources())
 
+<<<<<<< HEAD
 # Replace with your actual VISA address
 '''sig = rm.open_resource(rm.list_resources()[0])  # assumes first device is your sig-gen
 
@@ -49,3 +45,13 @@ sweep(1e9, 1.1e9, 10e6)
 time.sleep(2)
 output(False)
 '''
+=======
+for addr in known_instruments:
+    try:
+        instr = rm.open_resource(addr)
+        idn = instr.query("*IDN?")
+        print(f"✅ {addr} connected. IDN: {idn.strip()}")
+        instr.close()
+    except Exception as e:
+        print(f"❌ {addr} NOT connected or unreachable. Error: {e}")
+>>>>>>> 2baf7791e5ef6ac1faf5fa946b30c84d334f80ad
