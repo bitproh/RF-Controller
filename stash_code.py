@@ -13,7 +13,7 @@ rm = pyvisa.ResourceManager()
 print("Resources:", rm.list_resources())
 
 # Replace with your actual VISA address
-sig = rm.open_resource(rm.list_resources()[0])  # assumes first device is your sig-gen
+'''sig = rm.open_resource(rm.list_resources()[0])  # assumes first device is your sig-gen
 
 print("IDN:", sig.query("*IDN?").strip())
 
@@ -48,3 +48,4 @@ time.sleep(1)
 sweep(1e9, 1.1e9, 10e6)
 time.sleep(2)
 output(False)
+'''
