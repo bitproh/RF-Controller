@@ -1,4 +1,4 @@
-from utils import parse_frequency, slow_print, SLOW_MODE
+from utils import parse_frequency, slow_print, SLOW_MODE, save_screenshot
 import datetime
 import os
 import time
@@ -127,25 +127,7 @@ def run_ga_monitor_sequence(sg_instr, sa_instr, sg_name="SignalGenerator", sa_na
         slow_print(f"Spectrum Analyzer Marker Power: {peak_power} dBm")
 
         # Screenshot Section
-        save_to_instr = input("Do you want to save the screenshot to your Instrument? (y/n): ").strip().lower()
-        if save_to_instr == "y":
-            now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            folder_on_instr = r"D:\GA monitor"
-            filename = f"{sa_name}_{now}.png"
-            full_instr_path = f"{folder_on_instr}\\{filename}"
-            sa_instr.write(f':MMEM:STOR:SCR "{full_instr_path}"')
-            slow_print(f"Screenshot saved as {full_instr_path} on instrument.")
-
-            save_to_pc = input("Do you want to save the screenshot to your PC? (y/n): ").strip().lower()
-            if save_to_pc == "y":
-                save_folder = r"D:\GA monitor"
-                os.makedirs(save_folder, exist_ok=True)
-                save_path = os.path.join(save_folder, filename)
-                slow_print("Transferring screenshot to PC...")
-                screenshot_data = sa_instr.query_binary_values(f':MMEM:DATA? "{full_instr_path}"', datatype='B')
-                with open(save_path, "wb") as f:
-                    f.write(bytearray(screenshot_data))
-                slow_print(f"Screenshot saved as {save_path} on your PC.")
+        save_screenshot(sa_instr, sa_name)
 
         sg_instr.write("OUTP OFF")
 
