@@ -130,7 +130,7 @@ def parse_frequency(freq_input):
 
 #fucntion for printing values with delay
 
-SLOW_MODE = False # 🔁 Toggle this to False for instant printing
+SLOW_MODE = True # 🔁 Toggle this to False for instant printing
 
 def slow_print(text, delay=0.05, char_delay=0.05):
     if not SLOW_MODE:
