@@ -1,5 +1,6 @@
 from utils import parse_frequency, slow_print
 import datetime
+import os
 
 def run_test_sequence(instr, device_name="SpectrumAnalyzer"):
     results = []
@@ -76,16 +77,23 @@ def run_test_sequence(instr, device_name="SpectrumAnalyzer"):
 
     # -------- Save Screenshot --------
     now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    folder_on_instr = r"D:\spec analyzer test screenshot"
     filename = f"{device_name}_{now}.png"
-    instr.write(f':MMEM:STOR:SCR "{filename}"')
-    slow_print(f"Screenshot saved as {filename} on instrument.")
+    full_instr_path = f"{folder_on_instr}\\{filename}"
+    instr.write(f':MMEM:STOR:SCR "{full_instr_path}"')
+    slow_print(f"Screenshot saved as {full_instr_path} on instrument.")
 
     save_to_pc = input("Do you want to save the screenshot to your PC? (y/n): ").strip().lower()
     if save_to_pc == "y":
+        # Create folder if it doesn't exist
+        save_folder = r"D:\spec analyzer test screenshot"
+        os.makedirs(save_folder, exist_ok=True)
+        save_path = os.path.join(save_folder, filename)
+
         slow_print("Transferring screenshot to PC...")
         screenshot_data = instr.query_binary_values(f':MMEM:DATA? "{filename}"', datatype='B')
-        with open(filename, "wb") as f:
+        with open(save_path, "wb") as f:
             f.write(bytearray(screenshot_data))
-        slow_print(f"Screenshot saved as {filename} on your PC.")
+        slow_print(f"Screenshot saved as {save_path} on your PC.")
 
     return results
