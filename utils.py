@@ -5,6 +5,27 @@ from datetime import datetime
 import os
 from openpyxl.utils.exceptions import InvalidFileException
 
+def format_unit(key, value):
+    """Format frequency and power values into readable units."""
+    try:
+        value = float(value)
+    except:
+        return str(value)
+
+    if "Frequency" in key and "Hz" in key:
+        if value >= 1e9:
+            return f"{value / 1e9:.3f} GHz"
+        elif value >= 1e6:
+            return f"{value / 1e6:.3f} MHz"
+        elif value >= 1e3:
+            return f"{value / 1e3:.3f} kHz"
+        else:
+            return f"{value:.0f} Hz"
+    elif "Power" in key and "dBm" in key:
+        return f"{value:.2f} dBm"
+
+    return str(value)
+
 def export_results_to_excel(result_data, filename_prefix="Test_Result"):
     export_folder = "results"
     os.makedirs(export_folder, exist_ok=True)
@@ -28,9 +49,9 @@ def export_results_to_excel(result_data, filename_prefix="Test_Result"):
         ws = wb.active
         ws.title = "Results"
 
-    # Add timestamp section
+    # Add timestamp
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    ws.append([])  # empty row for spacing
+    ws.append([])
     ws.append(["Timestamp", timestamp])
     ws.append([])
 
@@ -38,7 +59,7 @@ def export_results_to_excel(result_data, filename_prefix="Test_Result"):
     if isinstance(result_data, dict):
         ws.append(["Parameter", "Value"])
         for key, value in result_data.items():
-            ws.append([key, value])
+            ws.append([key, format_unit(key, value)])
 
     # Case 2: List of dictionaries
     elif isinstance(result_data, list):
@@ -46,7 +67,7 @@ def export_results_to_excel(result_data, filename_prefix="Test_Result"):
             headers = list(result_data[0].keys())
             ws.append(headers)
             for item in result_data:
-                ws.append([item.get(h, "") for h in headers])
+                ws.append([format_unit(k, item.get(k, "")) for k in headers])
         else:
             ws.append(["Index", "Value"])
             for idx, item in enumerate(result_data, start=1):
@@ -56,8 +77,8 @@ def export_results_to_excel(result_data, filename_prefix="Test_Result"):
     else:
         ws.append(["Raw Output"])
         ws.append([str(result_data)])
-
-    # Save the updated file
+    #Save the file 
+    
     wb.save(filepath)
     print(f"✅ Results appended to Excel: {filepath}")
 
