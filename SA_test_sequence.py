@@ -59,6 +59,11 @@ def run_test_sequence(instr, device_name="SpectrumAnalyzer"):
     slow_print(f"Setting Reference Level: {ref_level} dBm")
     instr.write(f"DISP:WIND:TRAC:Y:RLEV {ref_level}")
 
+    # -------- Start Sweep and Wait for Completion --------
+    slow_print("Starting sweep...")
+    instr.write("INIT:IMM")  # Start sweep
+    instr.query("*OPC?")     # Wait for sweep to complete
+
     # -------- Marker Peak Search --------
     slow_print("Activating Marker at peak location...")
     instr.write("CALC:MARK1 ON")
@@ -98,5 +103,10 @@ def run_test_sequence(instr, device_name="SpectrumAnalyzer"):
             with open(save_path, "wb") as f:
                 f.write(bytearray(screenshot_data))
             slow_print(f"Screenshot saved as {save_path} on your PC.")
+    # -------- Ask to Reset Parameters --------
+    reset_params = input("Do you want to reset the instrument parameters? (y/n): ").strip().lower()
+    if reset_params == "y":
+        instr.write("*RST")
+        slow_print("Instrument parameters have been reset.")
 
     return results
