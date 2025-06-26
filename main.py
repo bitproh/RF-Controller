@@ -136,7 +136,7 @@ def main(test_mode=False):
                 return
 
         slow_print("Starting GA Monitor Test Sequence...\n")
-        result = run_ga_monitor_sequence(instr[0], instr[1], name)
+        result = run_ga_monitor_sequence(instr, instr, name)
 
     else:
         slow_print("Invalid choice! Exiting program.")
