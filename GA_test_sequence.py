@@ -29,12 +29,23 @@ def run_ga_monitor_sequence(sg_instr, sa_instr, sg_name="SignalGenerator", sa_na
         except ValueError:
             slow_print("Invalid input! Please enter a numeric value.")
 
-    # -------- Get Span, Ref Level, RBW, VBW for SA --------
+    # -------- Get Start/Stop, Ref Level, RBW, VBW for SA --------
     while True:
         try:
-            span_str = input("Enter Span for Spectrum Analyzer (e.g., 10MHz): ")
-            span = parse_frequency(span_str)
+            start_str = input("Enter Start Frequency for Spectrum Analyzer (e.g., 900MHz): ")
+            start_freq = parse_frequency(start_str)
             break
+        except ValueError as e:
+            slow_print(f"Error: {e}. Please try again.")
+
+    while True:
+        try:
+            stop_str = input("Enter Stop Frequency for Spectrum Analyzer (e.g., 1.1GHz): ")
+            stop_freq = parse_frequency(stop_str)
+            if stop_freq > start_freq:
+                break
+            else:
+                slow_print("Stop frequency must be greater than start frequency.")
         except ValueError as e:
             slow_print(f"Error: {e}. Please try again.")
 
@@ -71,8 +82,11 @@ def run_ga_monitor_sequence(sg_instr, sa_instr, sg_name="SignalGenerator", sa_na
     sg_instr.write("OUTP ON")
 
     # -------- Set Spectrum Analyzer --------
-    slow_print(f"Setting SA Center Frequency: {freq} Hz")
-    sa_instr.write(f"FREQ:CENT {freq}")
+    slow_print(f"Setting SA Start Frequency: {start_freq} Hz")
+    sa_instr.write(f"FREQ:STAR {start_freq}")
+
+    slow_print(f"Setting SA Stop Frequency: {stop_freq} Hz")
+    sa_instr.write(f"FREQ:STOP {stop_freq}")
 
     slow_print(f"Setting SA Span: {span} Hz")
     sa_instr.write(f"FREQ:SPAN {span}")
@@ -107,8 +121,8 @@ def run_ga_monitor_sequence(sg_instr, sa_instr, sg_name="SignalGenerator", sa_na
     results.append({
         'SG Frequency (Hz)': sg_set_freq,
         'SG Power (dBm)': sg_set_power,
-        'SA Center Frequency (Hz)': freq,
-        'SA Span (Hz)': span,
+        'SA Start Frequency (Hz)': start_freq,
+        'SA Stop Frequency (Hz)': stop_freq,
         'SA Reference Level (dBm)': ref_level,
         'SA RBW (Hz)': RBW,
         'SA VBW (Hz)': VBW,
