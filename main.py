@@ -4,8 +4,9 @@ slow_print("Welcome to the RF Test Automation Suite!")
 # ✅ List your known instruments (Signal Generator and Spectrum Analyzer)
 known_instruments = {
     "Signal Generator": "TCPIP0::169.254.167.6::inst0::INSTR",
-    "Spectrum Analyzer": "USB0::0x2A8D::0x5D0C::MY12345678::INSTR",
-    "Spectrum Analyzer 2": "USB0::0x2A8D::0x1B0B::MY63440324::INSTR"
+    "Spectrum Analyzer2": "USB0::0x2A8D::0x5D0C::MY12345678::INSTR",
+    "Spectrum Analyzer" : "USB0::0x2A8D::0x1B0B::MY63440324::0::INSTR"
+
 }
 
 # ✅ Function to check and return only connected instruments
@@ -81,7 +82,8 @@ def main(test_mode=False):
         name = "Spectrum Analyzer"
         if test_mode:
             from SA_test_mode import MockInstrument
-            from SA_basic_sequence import run_spectrum_analysis
+            #from SA_basic_sequence import run_spectrum_analysis
+            from SA_test_sequence import run_test_sequence
             slow_print("Running SPECTRUM ANALYZER in TEST MODE.")
             instr = MockInstrument()
         else:
@@ -89,7 +91,8 @@ def main(test_mode=False):
                 slow_print(f"{name} is not connected. Exiting.")
                 return
 
-            from SA_basic_sequence import run_spectrum_analysis
+            #from SA_basic_sequence import run_spectrum_analysis
+            from SA_test_sequence import run_test_sequence
             slow_print("Running SPECTRUM ANALYZER in LIVE MODE.")
             rm = pyvisa.ResourceManager()
             visa_address = connected_devices[name][0]  # Get address from check
@@ -101,7 +104,8 @@ def main(test_mode=False):
                 return
 
         slow_print("Starting Spectrum Analyzer Test Sequence...\n")
-        result = run_spectrum_analysis(instr)
+        #result = run_spectrum_analysis(instr)
+        result = run_test_sequence(instr)
 
     else:
         slow_print("Invalid choice! Exiting program.")
