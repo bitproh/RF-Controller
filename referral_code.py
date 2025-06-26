@@ -1,43 +1,19 @@
-#connection to the device. 
-#how the device is connected to the computer, such as via USB, Ethernet, or GPIB.
-# This script generates a referral code based on user input for identity, VISA resource, and IP address.
+#stash code copied code, dont tamper with this
 import pyvisa
+
+known_instruments = [
+    "TCPIP0::169.254.167.6::inst0::INSTR",
+    "USB0::0x2A8D::0x1D0B::MY62282097::0::INSTR"
+]
 
 rm = pyvisa.ResourceManager()
 
-# List all VISA devices connected
-resources = rm.list_resources()
-print("Connected VISA devices:")
-for res in resources:
-    print(f" - {res}")
 
-# Variables to hold devices
-siggen = None
-specan = None
-
-# Search and assign based on IDN response
-for res in resources:
+for addr in known_instruments:
     try:
-        dev = rm.open_resource(res)
-        idn = dev.query("*IDN?").strip()
-        print(f"{res} → {idn}")
-
-        if "E8257D" in idn:
-            siggen = dev
-            print("→ Signal Generator found and assigned.")
-        elif "N9010B" in idn:
-            specan = dev
-            print("→ Spectrum Analyzer found and assigned.")
+        instr = rm.open_resource(addr)
+        idn = instr.query("*IDN?")
+        print(f"✅ {addr} connected. IDN: {idn.strip()}")
+        instr.close()
     except Exception as e:
-        print(f"Error with {res}: {e}")
-
-# Check status
-if siggen:
-    print("\n✅ Signal Generator ready.")
-else:
-    print("\n❌ Signal Generator not found.")
-
-if specan:
-    print("✅ Spectrum Analyzer ready.")
-else:
-    print("❌ Spectrum Analyzer not found.")
+        print(f"❌ {addr} NOT connected or unreachable. Error: {e}")
