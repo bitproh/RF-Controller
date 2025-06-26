@@ -1,5 +1,5 @@
 import pyvisa
-from utils import slow_print, export_results_to_excel, SLOW_MODE
+from utils import slow_print, export_all_results, SLOW_MODE
 slow_print("Welcome to the RF Test Automation Suite!")
 # ✅ List your known instruments (Signal Generator and Spectrum Analyzer)
 known_instruments = {
@@ -144,7 +144,7 @@ def main(test_mode=False):
 
     slow_print("\nTest Sequence Completed.")
     print("Result Dictionary:", result)
-    export_results_to_excel(result, filename_prefix=name.replace(" ", "_"))
+    export_all_results(result, filename_prefix=name.replace(" ", "_"))
 
     instr.close()
     slow_print("Instrument session closed.")
