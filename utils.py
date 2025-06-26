@@ -6,6 +6,42 @@ import os
 from openpyxl.utils.exceptions import InvalidFileException
 import json
 
+def save_screenshot(sa_instr, sa_name="SpectrumAnalyzer"):
+
+    save_to_instr = input("📸 Do you want to save the screenshot to your Instrument? (y/n): ").strip().lower()
+    if save_to_instr != "y":
+        return
+
+    now = datetime.now().strftime("%Y%m%d_%H%M%S")
+    folder_on_instr = r"D:\GA monitor"
+    filename = f"{sa_name}_{now}.png"
+    full_instr_path = f"{folder_on_instr}\\{filename}"
+
+    try:
+        sa_instr.write(f':MMEM:STOR:SCR "{full_instr_path}"')
+        slow_print(f"Screenshot saved on instrument as {full_instr_path}.")
+    except Exception as e:
+        slow_print(f"❌ Failed to save screenshot on instrument: {e}")
+        return
+
+    save_to_pc = input("💾 Do you want to transfer the screenshot to your PC? (y/n): ").strip().lower()
+    if save_to_pc != "y":
+        return
+
+    try:
+        save_folder = r"D:\GA monitor"
+        os.makedirs(save_folder, exist_ok=True)
+        save_path = os.path.join(save_folder, filename)
+
+        slow_print("Transferring screenshot to PC...")
+        screenshot_data = sa_instr.query_binary_values(f':MMEM:DATA? "{full_instr_path}"', datatype='B')
+        with open(save_path, "wb") as f:
+            f.write(bytearray(screenshot_data))
+        slow_print(f"✅ Screenshot saved to PC at: {save_path}")
+    except Exception as e:
+        slow_print(f"❌ Failed to transfer screenshot to PC: {e}")
+
+
 def format_unit(key, value):
     """Format frequency and power values into readable units."""
     try:
