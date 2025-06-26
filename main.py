@@ -38,8 +38,9 @@ def main(test_mode=False):
     slow_print("Please select the instrument to test:")
     slow_print("[1] Signal Generator")
     slow_print("[2] Spectrum Analyzer")
+    slow_print("[3] Signal Generator + Spectrum Analyzer (GA Monitor)")
 
-    choice = input("Enter your choice (1 or 2): ").strip()
+    choice = input("Enter your choice (1, 2, or 3): ").strip()
 
     # --------------------------
     # Signal Generator Selected
@@ -107,6 +108,36 @@ def main(test_mode=False):
         #result = run_spectrum_analysis(instr)
         result = run_test_sequence(instr)
 
+    elif choice == "3":
+        name = "Signal Generator + Spectrum Analyzer"
+        if test_mode:
+            from GA_test_mode import MockGAInstrument
+            from GA_test_sequence import run_ga_monitor_sequence
+            slow_print("Running GA MONITOR in TEST MODE.")
+            instr = MockGAInstrument()
+        else:
+            if "Signal Generator" not in connected_devices or "Spectrum Analyzer" not in connected_devices:
+                slow_print("Both Signal Generator and Spectrum Analyzer must be connected for GA Monitor. Exiting.")
+                return
+
+            from GA_test_sequence import run_ga_monitor_sequence
+            slow_print("Running GA MONITOR in LIVE MODE.")
+            rm = pyvisa.ResourceManager()
+            visa_address_sg = connected_devices["Signal Generator"][0]
+            visa_address_sa = connected_devices["Spectrum Analyzer"][0]
+            try:
+                instr_sg = rm.open_resource(visa_address_sg)
+                instr_sa = rm.open_resource(visa_address_sa)
+                slow_print(f"Connected to SG: {instr_sg.query('*IDN?').strip()}")
+                slow_print(f"Connected to SA: {instr_sa.query('*IDN?').strip()}")
+                instr = (instr_sg, instr_sa)  # Tuple for both instruments
+            except Exception as e:
+                slow_print(f"Connection Failed: {e}")
+                return
+
+        slow_print("Starting GA Monitor Test Sequence...\n")
+        result = run_ga_monitor_sequence(instr[0], instr[1], name)
+
     else:
         slow_print("Invalid choice! Exiting program.")
         return
@@ -120,4 +151,4 @@ def main(test_mode=False):
 
 
 if __name__ == "__main__":
-    main(test_mode=False)  # 🔁 Toggle to False for live mode
+    main(test_mode=True)  # 🔁 Toggle to False for live mode
