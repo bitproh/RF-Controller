@@ -21,11 +21,11 @@ def run_ga_monitor_sequence(sg_instr, sa_instr, sg_name="SignalGenerator", sa_na
 
     while True:
         try:
-            power = float(input("Enter Power for Signal Generator (in dBm, between -50 and 0): "))
-            if -50 <= power <= 0:
+            power = float(input("Enter Power for Signal Generator (in dBm, between -100 and 0): "))
+            if -100 <= power <= 0:
                 break
             else:
-                slow_print("Power out of range! Please enter a value between -50 and 0 dBm.")
+                slow_print("Power out of range! Please enter a value between -100 and 0 dBm.")
         except ValueError:
             slow_print("Invalid input! Please enter a numeric value.")
 
@@ -89,6 +89,7 @@ def run_ga_monitor_sequence(sg_instr, sa_instr, sg_name="SignalGenerator", sa_na
     # -------- Start Sweep and Wait for Completion --------
     slow_print("Starting sweep on Spectrum Analyzer...")
     sa_instr.write("INIT:IMM")
+    sa_instr.write("*WAI")  # Wait for sweep to complete
     sa_instr.query("*OPC?")  # Wait for sweep to complete
 
     # -------- Marker Peak Search --------
