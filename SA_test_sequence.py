@@ -1,5 +1,7 @@
-from utils import parse_frequency, slow_print
+from utils import parse_frequency, slow_print,SLOW_MODE
 import datetime
+import os
+import time
 
 def run_test_sequence(instr, device_name="SpectrumAnalyzer"):
     results = []
@@ -57,6 +59,11 @@ def run_test_sequence(instr, device_name="SpectrumAnalyzer"):
     slow_print(f"Setting Reference Level: {ref_level} dBm")
     instr.write(f"DISP:WIND:TRAC:Y:RLEV {ref_level}")
 
+    # -------- Start Sweep and Wait for Completion --------
+    slow_print("Starting sweep...")
+    instr.write("INIT:IMM")  # Start sweep
+    instr.query("*OPC?")     # Wait for sweep to complete
+
     # -------- Marker Peak Search --------
     slow_print("Activating Marker at peak location...")
     instr.write("CALC:MARK1 ON")
@@ -75,17 +82,31 @@ def run_test_sequence(instr, device_name="SpectrumAnalyzer"):
     slow_print(f"Peak Power: {peak_power} dBm")
 
     # -------- Save Screenshot --------
-    now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"{device_name}_{now}.png"
-    instr.write(f':MMEM:STOR:SCR "{filename}"')
-    slow_print(f"Screenshot saved as {filename} on instrument.")
+    save_to_instr = input("Do you want to save the screenshot to your Instrument? (y/n): ").strip().lower()
+    if save_to_instr == "y":
+        now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        folder_on_instr = r"D:\260625scrnshot"
+        filename = f"{device_name}_{now}.png"
+        full_instr_path = f"{folder_on_instr}\\{filename}"
+        instr.write(f':MMEM:STOR:SCR "{full_instr_path}"')
+        slow_print(f"Screenshot saved as {full_instr_path} on instrument.")
 
-    save_to_pc = input("Do you want to save the screenshot to your PC? (y/n): ").strip().lower()
-    if save_to_pc == "y":
-        slow_print("Transferring screenshot to PC...")
-        screenshot_data = instr.query_binary_values(f':MMEM:DATA? "{filename}"', datatype='B')
-        with open(filename, "wb") as f:
-            f.write(bytearray(screenshot_data))
-        slow_print(f"Screenshot saved as {filename} on your PC.")
+        save_to_pc = input("Do you want to save the screenshot to your PC? (y/n): ").strip().lower()
+        if save_to_pc == "y":
+            # Create folder if it doesn't exist
+            save_folder = r"D:\260625scrnshot"
+            os.makedirs(save_folder, exist_ok=True)
+            save_path = os.path.join(save_folder, filename)
+
+            slow_print("Transferring screenshot to PC...")
+            screenshot_data = instr.query_binary_values(f':MMEM:DATA? "{full_instr_path}"', datatype='B')
+            with open(save_path, "wb") as f:
+                f.write(bytearray(screenshot_data))
+            slow_print(f"Screenshot saved as {save_path} on your PC.")
+    # -------- Ask to Reset Parameters --------
+    reset_params = input("Do you want to reset the instrument parameters? (y/n): ").strip().lower()
+    if reset_params == "y":
+        instr.write("*RST")
+        slow_print("Instrument parameters have been reset.")
 
     return results

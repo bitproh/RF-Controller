@@ -1,4 +1,4 @@
-from utils import slow_print
+from utils import slow_print,SLOW_MODE
 
 class MockInstrument:
     def __init__(self):
