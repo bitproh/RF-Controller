@@ -1,10 +1,11 @@
 import pyvisa
-from utils import slow_print, export_results_to_excel
+from utils import slow_print, export_results_to_excel, SLOW_MODE
 slow_print("Welcome to the RF Test Automation Suite!")
 # ✅ List your known instruments (Signal Generator and Spectrum Analyzer)
 known_instruments = {
     "Signal Generator": "TCPIP0::169.254.167.6::inst0::INSTR",
-    "Spectrum Analyzer": "USB0::0x2A8D::0x5D0C::MY12345678::INSTR"
+    "Spectrum Analyzer": "USB0::0x2A8D::0x5D0C::MY12345678::INSTR",
+    "Spectrum Analyzer 2": "USB0::0x2A8D::0x1B0B::MY63440324::INSTR"
 }
 
 # ✅ Function to check and return only connected instruments
@@ -115,4 +116,4 @@ def main(test_mode=False):
 
 
 if __name__ == "__main__":
-    main(test_mode=True)  # 🔁 Toggle to False for live mode
+    main(test_mode=False)  # 🔁 Toggle to False for live mode

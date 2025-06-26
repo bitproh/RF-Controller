@@ -1,6 +1,7 @@
-from utils import parse_frequency, slow_print
+from utils import parse_frequency, slow_print,SLOW_MODE
 import datetime
 import os
+import time
 
 def run_test_sequence(instr, device_name="SpectrumAnalyzer"):
     results = []
