@@ -4,6 +4,7 @@ from openpyxl import Workbook, load_workbook
 from datetime import datetime
 import os
 from openpyxl.utils.exceptions import InvalidFileException
+import json
 
 def format_unit(key, value):
     """Format frequency and power values into readable units."""
@@ -26,61 +27,81 @@ def format_unit(key, value):
 
     return str(value)
 
-def export_results_to_excel(result_data, filename_prefix="Test_Result"):
+def export_all_results(result_data, filename_prefix="Test_Result"):
     export_folder = "results"
     os.makedirs(export_folder, exist_ok=True)
 
-    # File path (one file per day)
-    today_str = datetime.now().strftime('%Y%m%d')
-    filename = f"{filename_prefix}_{today_str}.xlsx"
-    filepath = os.path.join(export_folder, filename)
+    # Ask user for Excel export
+    save_excel = input("💾 Do you want to save results to Excel? (y/n): ").strip().lower()
+    if save_excel == 'y':
+        today_str = datetime.now().strftime('%Y%m%d')
+        excel_filename = f"{filename_prefix}_{today_str}.xlsx"
+        excel_path = os.path.join(export_folder, excel_filename)
 
-    # Try to load existing workbook, or create new one
-    try:
-        if os.path.exists(filepath):
-            wb = load_workbook(filepath)
-            ws = wb.active
-        else:
+        try:
+            if os.path.exists(excel_path):
+                wb = load_workbook(excel_path)
+                ws = wb.active
+            else:
+                wb = Workbook()
+                ws = wb.active
+                ws.title = "Results"
+        except InvalidFileException:
             wb = Workbook()
             ws = wb.active
             ws.title = "Results"
-    except InvalidFileException:
-        wb = Workbook()
-        ws = wb.active
-        ws.title = "Results"
 
-    # Add timestamp
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    ws.append([])
-    ws.append(["Timestamp", timestamp])
-    ws.append([])
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        ws.append([])
+        ws.append(["Timestamp", timestamp])
+        ws.append([])
 
-    # Case 1: Dictionary
-    if isinstance(result_data, dict):
-        ws.append(["Parameter", "Value"])
-        for key, value in result_data.items():
-            ws.append([key, format_unit(key, value)])
-
-    # Case 2: List of dictionaries
-    elif isinstance(result_data, list):
-        if all(isinstance(item, dict) for item in result_data):
-            headers = list(result_data[0].keys())
-            ws.append(headers)
-            for item in result_data:
-                ws.append([format_unit(k, item.get(k, "")) for k in headers])
+        if isinstance(result_data, dict):
+            ws.append(["Parameter", "Value"])
+            for key, value in result_data.items():
+                ws.append([key, value])
+        elif isinstance(result_data, list):
+            if all(isinstance(item, dict) for item in result_data):
+                headers = list(result_data[0].keys())
+                ws.append(headers)
+                for item in result_data:
+                    ws.append([item.get(h, "") for h in headers])
+            else:
+                ws.append(["Index", "Value"])
+                for idx, item in enumerate(result_data, start=1):
+                    ws.append([idx, str(item)])
         else:
-            ws.append(["Index", "Value"])
-            for idx, item in enumerate(result_data, start=1):
-                ws.append([idx, str(item)])
+            ws.append(["Raw Output"])
+            ws.append([str(result_data)])
 
-    # Fallback case
-    else:
-        ws.append(["Raw Output"])
-        ws.append([str(result_data)])
-    #Save the file 
+        wb.save(excel_path)
+        print(f"✅ Results saved to Excel: {excel_path}")
 
-    wb.save(filepath)
-    print(f"✅ Results appended to Excel: {filepath}")
+    # Ask user for JSON export
+    save_json = input("💾 Do you want to save results to JSON? (y/n): ").strip().lower()
+    if save_json == 'y':
+        today = datetime.now().strftime("%Y%m%d")
+        json_filename = f"{filename_prefix}_{today}.json"
+        json_path = os.path.join(export_folder, json_filename)
+
+        if os.path.exists(json_path):
+            try:
+                with open(json_path, "r") as f:
+                    log = json.load(f)
+            except json.JSONDecodeError:
+                log = []
+        else:
+            log = []
+
+        log.append({
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "data": result_data
+        })
+
+        with open(json_path, "w") as f:
+            json.dump(log, f, indent=4)
+
+        print(f"✅ Results saved to JSON log: {json_path}")
 
 
 def parse_frequency(freq_input):
