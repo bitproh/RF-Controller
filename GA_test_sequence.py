@@ -1,4 +1,4 @@
-from utils import parse_frequency, slow_print, SLOW_MODE
+from utils import parse_frequency, slow_print, SLOW_MODE, save_screenshot
 import datetime
 import os
 import time
