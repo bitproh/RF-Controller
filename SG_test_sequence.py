@@ -59,6 +59,29 @@ def run_test_sequence(instr):
             'Power (dBm)': set_power
         })
 
+        #save screenshot to device
+        save_to_pc = input("Do you want to save a screenshot to the PC? (yes/no): ").strip().lower()
+        if save_to_pc == 'yes':
+            import datetime, os
+            now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            folder_on_instr = r"D:\GA monitor"
+            filename = f"SG_screen_{now}.png"
+            full_instr_path = f"{folder_on_instr}\\{filename}"
+
+            # Save screenshot to instrument memory
+            instr.write(f"MMEM:NAME '{full_instr_path}'")
+            # Transfer screenshot to PC
+            os.makedirs(folder_on_instr, exist_ok=True)
+            screenshot_data = instr.query_binary_values(f"MMEM:DATA? '{full_instr_path}'", datatype='B')
+            save_path = os.path.join(folder_on_instr, filename)
+            with open(save_path, "wb") as f:
+                f.write(bytearray(screenshot_data))
+            slow_print(f"Screenshot saved as {save_path} on your PC.")
+
+        
+            
+            
+
         instr.write("OUTP OFF")
         current_freq += step_freq
 
