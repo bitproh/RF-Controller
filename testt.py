@@ -100,3 +100,4 @@ def run_test_sequence(instr, device_name="SpectrumAnalyzer"):
     return results
 
 #nikheth github updated
+#folder name updated
