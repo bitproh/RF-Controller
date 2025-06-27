@@ -98,3 +98,5 @@ def run_test_sequence(instr, device_name="SpectrumAnalyzer"):
     slow_print(f"Screenshot saved as {filename} on instrument.")
 
     return results
+
+#nikheth github updated
